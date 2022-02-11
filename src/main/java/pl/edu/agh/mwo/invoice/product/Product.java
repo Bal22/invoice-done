@@ -18,8 +18,6 @@ public abstract class Product {
             throw new IllegalArgumentException("Price cannot be negative & null ");
         }
 
-
-
         this.name = name;
         this.price = price;
         this.taxPercent = tax;

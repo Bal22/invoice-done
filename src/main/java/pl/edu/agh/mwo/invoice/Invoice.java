@@ -3,7 +3,9 @@ package pl.edu.agh.mwo.invoice;
 import java.math.BigDecimal;
 import java.util.*;
 
+import pl.edu.agh.mwo.invoice.product.DairyProduct;
 import pl.edu.agh.mwo.invoice.product.Product;
+import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
 
 public class Invoice {
    // private List<Product> products = new ArrayList<>();
@@ -14,6 +16,9 @@ public class Invoice {
     }
 
     public void addProduct(Product product, Integer quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quanity must be above 0");
+        }
         this.products.put(product, quantity);
     }
 
@@ -30,10 +35,20 @@ public class Invoice {
     }
 
     public BigDecimal getTax() {
-        return BigDecimal.ZERO;
+        BigDecimal tax = BigDecimal.ZERO;
+        for (Product product : this.products.keySet()) {
+            Integer quantity = this.products.get(product);
+            tax = tax.add(product.getPrice().multiply(product.getTaxPercent()).multiply(BigDecimal.valueOf(quantity)));
+        }
+        return tax;
     }
 
     public BigDecimal getTotal() {
-        return BigDecimal.ZERO;
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Product product : this.products.keySet()) {
+            Integer quantity = this.products.get(product);
+            sum = sum.add(product.getPriceWithTax().multiply(BigDecimal.valueOf(quantity)));
+        }
+        return sum;
     }
 }
